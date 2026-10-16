@@ -1,0 +1,47 @@
+name: Deploy Landing 2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          script: |
+            set -e
+            TARGET_DIR="/var/www/landing2.ravnaqgroup.uz"
+            mkdir -p "$TARGET_DIR"
+            cd "$TARGET_DIR"
+
+            # Initialize git if needed
+            if [ ! -d ".git" ]; then
+              git init
+              git remote add origin https://github.com/Ruslan-Xusenov/ravnaqgroup.git
+            fi
+
+            # Fetch and reset to latest main
+            git fetch origin main
+            git reset --hard origin/main
+
+            # Fix permissions
+            chown -R www-data:www-data "$TARGET_DIR"
+            find "$TARGET_DIR" -type d -exec chmod 755 {} +
+            find "$TARGET_DIR" -type f -exec chmod 644 {} +
+
+            # Reload Nginx
+            systemctl reload nginx
+            echo "Landing 2 deployed successfully!"
