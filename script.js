@@ -13,18 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ctaButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             triggerHaptic(20);
-
-            // Meta Pixel Lead tracking
-            if (typeof fbq === 'function') {
-                try {
-                    fbq('track', 'Lead');
-                    fbq('track', 'Contact');
-                    fbq('track', 'Purchase', {value: 0.00, currency: 'USD'});
-                    fbq('trackCustom', 'TelegramSubscribe');
-                } catch (fbErr) {
-                    console.warn('Meta Pixel tracking error:', fbErr);
-                }
-            }
         });
     });
 
