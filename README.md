@@ -8,7 +8,12 @@ Asaka markazidagi xonadonlar aksiyasi uchun mo'ljallangan rasmiy lending sahifa.
 ## Texnologiyalar
 - HTML5, CSS3, Vanilla JavaScript
 - Meta Pixel (`2448977545632876`)
-- Avtomatlashtirilgan CI/CD (GitHub Actions orqali jonli serverga deploy)
+- Server-side GitHub Webhook CI/CD (Tezkor va xavfsiz avtomatik deploy)
 
-## CI/CD Deployment
-`main` tarmog'iga har qanday `push` amalga oshirilganda, GitHub Actions orqali serverdagi `/var/www/landing2.ravnaqgroup.uz` avtomatik yangilanadi va Nginx qayta yuklanadi.
+## CI/CD Avtomatizatsiyasi
+`main` tarmog'iga har qanday `git push` amalga oshirilganda:
+1. GitHub serverga webhook yuboradi (`/api/webhook-deploy`).
+2. Serverdagi `/opt/webhook-deploy/deploy_landing2.sh` skripti ishga tushadi.
+3. Serverdagi `/var/www/landing2.ravnaqgroup.uz` papkasiga eng oxirgi kod yuklanadi (`git fetch` + `git reset --hard origin/main`).
+4. Fayl huquqlari (`www-data:www-data`, 755/644) to'g'rilanadi.
+5. Nginx qayta yuklanadi (`systemctl reload nginx`).
