@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 try {
                     fbq('track', 'Lead');
                     fbq('track', 'Contact');
-                    fbq('track', 'Purchase', {value: 0.00, currency: 'USD'});
                     fbq('trackCustom', 'TelegramSubscribe');
                 } catch (fbErr) {
                     console.warn('Meta Pixel tracking error:', fbErr);
